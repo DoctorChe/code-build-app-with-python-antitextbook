@@ -13,6 +13,7 @@ ADD,REMOVE,LIST = "add","remove","list"
 def main():
     args = sys.argv
     
+#    try:    
     #Подключение к базе
     conn = sqlite3.connect("tasks.db")
     #Создание курсора
@@ -39,18 +40,23 @@ def main():
 #        #Вводим данные
 #        title = input("Введите название задачи\n")
 #        content = input("Введите содержание задачи\n")
-        t.add_task(title, content)
+        t.add_task(title, content, c, conn)
     elif command == "remove":
         task_id = args[2]
         #Вводим данные
 #        task_id = input("Введите номер задачи\n")
-        t.remove_task(task_id)
+        t.remove_task(task_id, c, conn)
     elif command == "list": 
-        t.list_task()
+        t.list_task(c, conn)
     else:
         print("invalid command!")
-    
-    # закрываем соединение с базой
+#    except sqlite3.Error:
+#        if conn:
+#            print("Error! Rolling back)
+#            conn.rollback()
+#    finally:
+#        if conn:
+            # закрываем соединение с базой
     c.close()
     conn.close()
 

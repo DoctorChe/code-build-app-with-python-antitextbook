@@ -1,37 +1,53 @@
 import sqlite3
 
-def connect_db():
-    #Подключение к базе
-    conn = sqlite3.connect("tasks.db")
-    #Создание курсора
-    c = conn.cursor()
-    return conn, c    
+#def connect_db():
+#    #Подключение к базе
+#    conn = sqlite3.connect("tasks.db")
+#    #Создание курсора
+#    c = conn.cursor()
+#    return conn, c    
 
 #Функция занесения задачи в базу
-def add_task(title, content):
-    conn, c = connect_db()
-    c.execute("INSERT INTO tasks (title, content) VALUES ('%s','%s')"%(title, content))
-    conn.commit()
-    print('Задача добавлена\n\n')
+def add_task(title, content, c, conn):
+    try:    
+#        conn, c = connect_db()
+#        c.execute("INSERT INTO tasks (title, content) VALUES ('%s','%s')"%(title, content))
+        c.execute("INSERT INTO tasks (title, content) VALUES (?, ?)", (title, content))
+        print(type((title, content)))
+    except sqlite3.Error:
+        if conn:
+            print("Error! Rolling back")
+            conn.rollback()
+    finally:
+        if conn:
+            conn.commit()
+            print('Задача добавлена\n\n')
         
 #Функция удаления задачи из базы
-def remove_task(task_id):
-    conn, c = connect_db()
+def remove_task(task_id, c, conn):
+    try:
+    #    conn, c = connect_db()
+        
+    #    if c.execute("SELECT * FROM tasks WHERE id = ('%s')"%(str(task_id))).rowcount > 0:
+    #        c.execute("DELETE FROM tasks WHERE id = ('%s')"%(str(task_id)))
+    #        print('Задача удалена\n\n')
+    #    else:
+    #        print("Задача с таким номером не найдена\n\n")
     
-#    if c.execute("SELECT * FROM tasks WHERE id = ('%s')"%(str(task_id))).rowcount > 0:
-#        c.execute("DELETE FROM tasks WHERE id = ('%s')"%(str(task_id)))
-#        print('Задача удалена\n\n')
-#    else:
-#        print("Задача с таким номером не найдена\n\n")
-
-    c.execute("DELETE FROM tasks WHERE id = ('%s')"%(str(task_id)))
-#    print("I just deleted", c.execute("DELETE FROM tasks WHERE id = ('%s')"%(str(index))).rowcount, "rows")
-    conn.commit()
-    print('Задача удалена\n\n')
+        c.execute("DELETE FROM tasks WHERE id = ?", (str(task_id), ))
+    #    print("I just deleted", c.execute("DELETE FROM tasks WHERE id = ('%s')"%(str(index))).rowcount, "rows")
+    except sqlite3.Error:
+        if conn:
+            print("Error! Rolling back")
+            conn.rollback
+    finally:
+        if conn:
+            conn.commit()
+            print('Задача удалена\n\n')
 
 #Функция удаления задачи из базы
-def list_task():
-    conn, c = connect_db()
+def list_task(c, conn):
+#    conn, c = connect_db()
     
 #    try:
 #        file = open("tasks.txt", "r")
